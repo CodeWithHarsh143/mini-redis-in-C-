@@ -3,7 +3,7 @@
 #include <errno.h>
 bool server_continuation;
 
-void mainloop(int16 port) {
+void initServer(int16 port) {
   struct sockaddr_in sock;
   int serverFD;
   errno = 0;
@@ -41,5 +41,5 @@ int main(int argc, char *argv[]) {
     server_port = argv[1];
   port = (int16)atoi(server_port);
   server_continuation = true;
-  mainloop(port);
+  initServer(port);
 }
