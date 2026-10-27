@@ -21,6 +21,6 @@ typedef unsigned short int int16;
 typedef unsigned char int8;
 
 /* code init */
-void mainloop(int16);
+void initServer(int16);
 int main(int, char **);
 #endif
