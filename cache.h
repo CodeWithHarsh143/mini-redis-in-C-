@@ -19,8 +19,14 @@
 typedef unsigned int int32;
 typedef unsigned short int int16;
 typedef unsigned char int8;
+typedef struct sock_client Client;
 
 /* code init */
+struct sock_client {
+  char ip[20];
+  int16 port;
+  int FD;
+};
 void mainloop(int);
 int initServer(int16);
 int main(int, char **);
