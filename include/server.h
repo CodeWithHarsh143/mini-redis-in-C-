@@ -1,6 +1,6 @@
 /* server*/
-#ifndef CACHE
-#define CACHE
+#ifndef SERVER
+#define SERVER
 #include <arpa/inet.h>
 #include <assert.h>
 #include <errno.h>
@@ -22,13 +22,6 @@ typedef unsigned char int8;
 typedef struct sock_client Client;
 
 /* code init */
-struct sock_client
-{
-  char ip[20];
-  int16 port;
-  int FD;
-};
-void childloop(Client *);
 void mainloop(int);
 int initServer(int16);
 int main(int, char **);
