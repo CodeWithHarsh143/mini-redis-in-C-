@@ -20,6 +20,50 @@ Node *create_node(Node *parent, int8 *path)
   strncpy((char *)n->path, (char *)path, 255);
   return n;
 }
+
+Leaf *find_last(Node *parent)
+{
+  Leaf *l;
+  assert(parent);
+  if (!parent->east)
+  {
+    perror("Not exist last leaf");
+  }
+  for (l = parent->east; l; l->east = l->east)
+    ; // linklist like traversal
+  assert(l);
+  return l;
+}
+Leaf *create_leaf(Node *parent, int8 *key, int8 value, int16 count)
+{
+  Leaf *l, *newLeaf;
+  Node *n;
+  int16 size;
+  assert(parent);
+  l = find_last(parent);
+  size = sizeof(struct TreeLeaf);
+  newLeaf = malloc(size);
+  assert(newLeaf);
+  *newLeaf = (Leaf){0};
+  newLeaf->tag = TagLeaf;
+  newLeaf->west = (!l) ? (Node *)parent : (Leaf *)l;
+  if (!l)
+  {
+    parent->east = newLeaf;
+  }
+  else
+  {
+    l->east = newLeaf;
+  }
+  newLeaf->east = NULL;
+  strncpy((char *)newLeaf->key, (char *)key, 128);
+  newLeaf->value = malloc(count);
+  assert(newLeaf->value);
+  newLeaf->value = (int8)0;
+  strncpy((char *)newLeaf->value, (char *)value, count);
+  newLeaf->size = count;
+  return newLeaf;
+}
 int main()
 {
   Node *n1, *n2;
