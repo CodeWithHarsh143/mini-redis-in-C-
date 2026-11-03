@@ -1,6 +1,14 @@
 /* server.c */
 #include "server.h"
 #include <stdlib.h>
+
+struct sock_client
+{
+  int FD;
+  int port;
+  char ip[INET_ADDRSTRLEN];
+};
+
 bool server_continuation;
 bool child_contination;
 void childloop(Client *client)
