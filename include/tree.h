@@ -8,9 +8,9 @@
 #include <assert.h>
 #include <errno.h>
 
-#define TagRoot 1;
-#define TagNode 2;
-#define TagLeaf 4;
+#define TagRoot 1
+#define TagNode 2
+#define TagLeaf 4
 
 typedef unsigned int int32;
 typedef short int int16;
@@ -31,15 +31,17 @@ struct TreeNode
   Tag tag;
   struct TreeNode *north;
   struct TreeNode *west;
-  struct TreeLeft *east;
+  struct TreeLeaf *east;
   int8 path[256];
 };
 typedef struct TreeNode Node;
 typedef struct TreeLeaf Leaf;
 union u_tree
 {
-  Leaf leaf;
   Node node;
+  Leaf leaf;
 };
 typedef union u_tree Tree;
 #endif
+Node * create_node(Node*,int8 *);
+int main();
