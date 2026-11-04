@@ -1,5 +1,5 @@
-#ifndef TREE
-#define TREE
+#ifndef TREE_H
+#define TREE_H
 // includes
 #include <stdio.h>
 #include <unistd.h>
