@@ -8,14 +8,23 @@ struct sock_client
   int port;
   char ip[INET_ADDRSTRLEN];
 };
-
+void zero(int8 *str, int16 size)
+{
+  int8 *p;
+  int16 n;
+  for (p = str, n = 0; n < size; p++, n++)
+    *p = 0;
+}
 bool server_continuation;
 bool child_contination;
 void childloop(Client *client)
 {
-  // tmep
-  sleep(1);
-  return;
+  int8 buf[256];
+  int16 n;
+  zero(buf, 256);
+  read(client->FD, (char *)buf, 255);
+  n = (int16)strlen((char *)buf);
+  
 }
 void mainloop(int serverFD)
 {
