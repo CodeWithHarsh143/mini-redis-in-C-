@@ -1,6 +1,5 @@
 /* server.c */
 #include "server.h"
-#include <stdlib.h>
 
 struct sock_client
 {
@@ -19,12 +18,28 @@ bool server_continuation;
 bool child_contination;
 void childloop(Client *client)
 {
-  int8 buf[256];
+  int8 buf[256], cmd[256], folder[256], args[256]; // # means strings
+  int8 *p;
   int16 n;
   zero(buf, 256);
   read(client->FD, (char *)buf, 255);
   n = (int16)strlen((char *)buf);
-  
+  if (n > 254)
+    n = 254;
+  for (p = buf; (*p && n && *p == '\r' && *p == '\n' && *p == ' '); p++, n--)
+    ;
+  zero(cmd, 256);
+  zero(folder, 256);
+  zero(args, 256);
+  if (!(*p) || (!n))
+  {
+    strncpy((char *)cmd, (char *)buf, 255);
+  }
+  else if (*p == ' ' || *p == '\n' || *p == '\r')
+  {
+    *p = 0;
+    strncpy((char *)folder, (char *)buf, 255);
+  }
 }
 void mainloop(int serverFD)
 {
