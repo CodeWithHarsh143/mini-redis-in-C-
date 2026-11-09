@@ -1,14 +1,12 @@
 /* server.c */
 #include "server.h"
 
-struct sock_client
-{
+struct sock_client {
   int FD;
   int port;
   char ip[INET_ADDRSTRLEN];
 };
-void zero(int8 *str, int16 size)
-{
+void zero(int8 *str, int16 size) {
   int8 *p;
   int16 n;
   for (p = str, n = 0; n < size; p++, n++)
@@ -16,33 +14,51 @@ void zero(int8 *str, int16 size)
 }
 bool server_continuation;
 bool child_contination;
-void childloop(Client *client)
-{
+void childloop(Client *client) {
   int8 buf[256], cmd[256], folder[256], args[256]; // # means strings
-  int8 *p;
+  int8 *p, *f, *c;
   int16 n;
   zero(buf, 256);
   read(client->FD, (char *)buf, 255);
   n = (int16)strlen((char *)buf);
   if (n > 254)
     n = 254;
-  for (p = buf; (*p && n && (*p == '\r' || *p == '\n' || *p == ' ')); p++, n--)
-    ;
   zero(cmd, 256);
   zero(folder, 256);
   zero(args, 256);
-  if (!(*p) || (!n))
-  {
-    strncpy((char *)cmd, (char *)buf, 255);
-  }
-  else if (*p == ' ' || *p == '\n' || *p == '\r')
-  {
+  for (p = buf; *p && n && *p == ' '; p++, n--)
+    ;
+  for (p, c = p; (*p && n && *p != '\r' && *p != '\n' && *p != ' '); p++, n--)
+    ;
+  if (!(*p) || (!n)) {
+    strncpy((char *)cmd, (char *)c, 255);
+    goto done;
+  } else if (*p == ' ' || *p == '\n' || *p == '\r') {
     *p = 0;
-    strncpy((char *)folder, (char *)buf, 255);
+    strncpy((char *)cmd, (char *)c, 255);
   }
+  for (p++; *p && n && *p == ' '; p++, n--)
+    ;
+  for (p, f = p; (*p && n && *p != '\r' * p != '\n' * p != ' '); p++, n--)
+    ;
+  if (!(*p) || (!n)) {
+    strncpy((char *)folder, (char *)f, 255);
+    goto done;
+  } else if (*p == ' ' || *p == '\n' || *p == '\r') {
+    *p = 0;
+    strncpy((char *)folder, (char *)f, 255);
+  }
+  for (p++; *p && n && *p == ' '; p++, n--)
+    ;
+  if (*p) {
+    strncpy((char *)args, (char *)p, 255);
+  }
+
+done:
+
+  return;
 }
-void mainloop(int serverFD)
-{
+void mainloop(int serverFD) {
   struct sockaddr_in cli;
   int ser_cli_FD;
   socklen_t len;
@@ -52,8 +68,7 @@ void mainloop(int serverFD)
   pid_t pid;
   ser_cli_FD = accept(serverFD, (struct sockaddr *)&cli, &len);
 
-  if (ser_cli_FD == -1)
-  {
+  if (ser_cli_FD == -1) {
     close(ser_cli_FD);
     return;
   }
@@ -64,8 +79,7 @@ void mainloop(int serverFD)
   printf("Connection from %s:%d\n", ip, port);
 
   Client *client = malloc(sizeof(struct sock_client));
-  if (client == NULL)
-  {
+  if (client == NULL) {
     perror("malloc");
     close(ser_cli_FD);
     return;
@@ -75,14 +89,11 @@ void mainloop(int serverFD)
   client->FD = ser_cli_FD;
   strcpy(client->ip, ip);
   pid = fork();
-  if (pid)
-  {
+  if (pid) {
     // not in child process
     free(client);
     return;
-  }
-  else
-  {
+  } else {
     //  in child process
     dprintf(ser_cli_FD, "Client connected to the cache server");
     child_contination = true;
@@ -94,8 +105,7 @@ void mainloop(int serverFD)
 
   return;
 }
-int initServer(int16 port)
-{
+int initServer(int16 port) {
   struct sockaddr_in sock = {0};
   int serverFD;
 
@@ -105,22 +115,19 @@ int initServer(int16 port)
 
   serverFD = socket(AF_INET, SOCK_STREAM, 0);
 
-  if (serverFD == -1)
-  {
+  if (serverFD == -1) {
     perror("socket");
     return -1;
   }
 
-  if (bind(serverFD, (struct sockaddr *)&sock, sizeof(sock)))
-  {
+  if (bind(serverFD, (struct sockaddr *)&sock, sizeof(sock))) {
     // non-zero values are error
     perror("Binding");
     close(serverFD);
     return -1;
   }
 
-  if (listen(serverFD, CONNECT_NO))
-  {
+  if (listen(serverFD, CONNECT_NO)) {
     // non-zero values are error
     perror("listen");
     close(serverFD);
@@ -131,8 +138,7 @@ int initServer(int16 port)
   return serverFD;
 }
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
   char *server_port;
   int16 port;
   int serverFD;
