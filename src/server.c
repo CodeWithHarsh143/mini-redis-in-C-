@@ -26,7 +26,7 @@ void childloop(Client *client)
   n = (int16)strlen((char *)buf);
   if (n > 254)
     n = 254;
-  for (p = buf; (*p && n && *p == '\r' && *p == '\n' && *p == ' '); p++, n--)
+  for (p = buf; (*p && n && (*p == '\r' || *p == '\n' || *p == ' ')); p++, n--)
     ;
   zero(cmd, 256);
   zero(folder, 256);
