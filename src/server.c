@@ -1,5 +1,6 @@
 /* server.c */
 #include "server.h"
+#include <stdio.h>
 
 struct sock_client {
   int FD;
@@ -39,7 +40,7 @@ void childloop(Client *client) {
   }
   for (p++; *p && n && *p == ' '; p++, n--)
     ;
-  for (p, f = p; (*p && n && *p != '\r' * p != '\n' * p != ' '); p++, n--)
+  for (p, f = p; (*p && n && *p != '\r' && *p != '\n' && *p != ' '); p++, n--)
     ;
   if (!(*p) || (!n)) {
     strncpy((char *)folder, (char *)f, 255);
@@ -52,9 +53,16 @@ void childloop(Client *client) {
     ;
   if (*p) {
     strncpy((char *)args, (char *)p, 255);
+    // for (p = args; *p && *p != '\n' && *p != '\r'; p++)
+    //   ;
+    // *p = 0;
   }
 
 done:
+  dprintf(client->FD, "\ncmd: %s\n", (char *)cmd);
+  dprintf(client->FD, "folder: %s\n", (char *)folder);
+  dprintf(client->FD, "args: %s\n", (char *)args);
+  dprintf(client->FD, "\n");
 
   return;
 }
@@ -95,7 +103,7 @@ void mainloop(int serverFD) {
     return;
   } else {
     //  in child process
-    dprintf(ser_cli_FD, "Client connected to the cache server");
+    dprintf(ser_cli_FD, "Client connected to the cache server\n");
     child_contination = true;
     while (child_contination)
       childloop(client);
