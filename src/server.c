@@ -1,12 +1,17 @@
 /* server.c */
 #include "server.h"
-#include <stdio.h>
 
-struct sock_client {
-  int FD;
-  int port;
-  char ip[INET_ADDRSTRLEN];
-};
+CmdHandler handlers[] = {{(int8 *)"hello", handle_hello}};
+
+Callback getcmd(int8 *cmd) {
+  printf("%ld", sizeof(handlers));
+  return 0;
+}
+
+int32 handle_hello(Client *client, int8 *folder, int8 *args) {
+  dprintf(client->FD, "hello %s\n", folder);
+  return 0;
+}
 void zero(int8 *str, int16 size) {
   int8 *p;
   int16 n;
@@ -155,6 +160,8 @@ int main(int argc, char *argv[]) {
   else
     server_port = argv[1];
   port = (int16)atoi(server_port);
+  getcmd((int8 *)"hello");
+  return 0;
   server_continuation = true;
   serverFD = initServer(port);
   if (serverFD == -1)
