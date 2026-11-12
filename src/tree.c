@@ -1,7 +1,7 @@
 #include "tree.h"
 Tree root = {.node = {.tag = (TagRoot | TagNode),
                       .north = (Node *)&root,
-                      .west = 0,
+                      .south = 0,
                       .east = 0,
                       .path = "/"}};
 void print_tree(int fd, Tree TreeRoot) {
@@ -9,7 +9,7 @@ void print_tree(int fd, Tree TreeRoot) {
   Node *n;
   Leaf *l;
   indendation = 0;
-  for (n = &TreeRoot.node; n; n = n->west) {
+  for (n = &TreeRoot.node; n; n = n->south) {
     indent(fd, indendation++);
     WRITE_NODE(fd, n->path);
     if (n->east) {
@@ -35,7 +35,7 @@ Node *create_node(Node *parent, int8 *path) {
   n = malloc(size);
   assert(n);
   *n = (Node){};
-  parent->west = n;
+  parent->south = n;
   n->north = parent;
   n->tag = TagNode;
   strncpy((char *)n->path, (char *)path, 255);
@@ -67,10 +67,10 @@ Leaf *create_leaf(Node *parent, int8 *key, int8 *value, int16 count) {
   newLeaf->tag = TagLeaf;
   if (!l) {
     parent->east = newLeaf;
-    newLeaf->west = (union u_tree *)parent;
+    newLeaf->south = (union u_tree *)parent;
   } else {
     l->east = newLeaf;
-    newLeaf->west = (union u_tree *)l;
+    newLeaf->south = (union u_tree *)l;
   }
   newLeaf->east = NULL;
   strncpy((char *)newLeaf->key, (char *)key, 128);
