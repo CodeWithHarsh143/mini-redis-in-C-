@@ -116,10 +116,28 @@ Node *find_node_linear(int8 *path) {
     ;
   if (*ch != *pp)
     return NULL;
-  printf("%s", "findit");
   return p;
 }
-Leaf *lookup_linear(int8 *path, int8 *key) { return NULL; }
+Leaf *lookup_linear(int8 *path, int8 *key) {
+  Node *p;
+  Leaf *l;
+  int16 size;
+  size = strlen((char *)key);
+  if (size > 127)
+    return NULL;
+  if (!find_node_linear(path))
+    return NULL;
+  if (!p->east)
+    return NULL;
+
+  for (l = p->east; (l && strcmp((char *)l->key, key)); l = l->east)
+    ;
+
+  if (!l)
+    return NULL;
+
+  return l;
+}
 int main() {
   // example
   Node *n1, *n2, *n3;
@@ -130,6 +148,11 @@ int main() {
   l = create_leaf(n3, "Harsh", "Baghel", sizeof("Baghel"));
   l = create_leaf(n3, "Shivam", "Baghel", sizeof("Baghel"));
   print_tree(STDOUT_FILENO, root);
-  find_node_linear((int8 *)"/Users/Document");
+  find_node_linear((int8 *)"/Users/Document/Redis");
+  l = lookup_linear("/Users/Document/Redis", "Monika");
+  if (l)
+    printf("%s\n", (char *)l->value);
+  else
+    printf("wrong path or key");
   return 0;
 }
