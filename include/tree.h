@@ -54,5 +54,7 @@ void zero(int8 *, int16);
 Leaf *find_last(Node *);
 Leaf *create_leaf(Node *, int8 *, int8 *, int16);
 Node *create_node(Node *, int8 *);
+Leaf *lookup_linear(int8 *, int8 *);
+Node *find_node_linear(int8 *);
 int main();
 #endif
