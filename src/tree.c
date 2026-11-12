@@ -1,4 +1,5 @@
 #include "tree.h"
+#include <linux/limits.h>
 Tree root = {.node = {.tag = (TagRoot | TagNode),
                       .north = (Node *)&root,
                       .south = 0,
@@ -86,6 +87,57 @@ void indent(int fd, int16 steps) {
   for (step = 0; step < steps; step++)
     write(fd, "  ", strlen("  "));
 }
+
+Node *find_node_linear(int8 *path) {
+  int16 size = strlen((char *)path);
+  if (size > 255)
+    return NULL;
+  int8 *ch, *pp;
+  Leaf *l;
+  int depth;
+  Node *p;
+  depth = 0;
+  ch = path;
+  while (*ch) {
+    if (*ch == '/') {
+      ch++;
+      if (*ch)
+        depth++;
+    } else
+      ch++;
+  }
+  for (p = &root.node; p && depth; p = p->south, depth--)
+    ;
+
+  if (!p)
+    return NULL;
+
+  for (ch = path, pp = p->path; *ch && *pp && (*ch == *pp); ch++, pp++)
+    ;
+  if (*ch != *pp)
+    return NULL;
+  return p;
+}
+Leaf *lookup_linear(int8 *path, int8 *key) {
+  Node *p;
+  Leaf *l;
+  int16 size;
+  size = strlen((char *)key);
+  if (size > 127)
+    return NULL;
+  if (!find_node_linear(path))
+    return NULL;
+  if (!p->east)
+    return NULL;
+
+  for (l = p->east; (l && strcmp((char *)l->key, key)); l = l->east)
+    ;
+
+  if (!l)
+    return NULL;
+
+  return l;
+}
 int main() {
   // example
   Node *n1, *n2, *n3;
@@ -96,5 +148,11 @@ int main() {
   l = create_leaf(n3, "Harsh", "Baghel", sizeof("Baghel"));
   l = create_leaf(n3, "Shivam", "Baghel", sizeof("Baghel"));
   print_tree(STDOUT_FILENO, root);
+  find_node_linear((int8 *)"/Users/Document/Redis");
+  l = lookup_linear("/Users/Document/Redis", "Monika");
+  if (l)
+    printf("%s\n", (char *)l->value);
+  else
+    printf("wrong path or key");
   return 0;
 }
