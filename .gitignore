@@ -236,3 +236,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+# object files
+tree
+server
