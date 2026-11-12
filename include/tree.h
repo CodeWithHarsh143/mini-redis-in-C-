@@ -42,6 +42,9 @@ union u_tree
   Leaf leaf;
 };
 typedef union u_tree Tree;
-#endif
-Node * create_node(Node*,int8 *);
+void zero(int8 *, int16);
+Leaf *find_last(Node *);
+Leaf *create_leaf(Node *, int8 *, int8 *, int16);
+Node *create_node(Node *, int8 *);
 int main();
+#endif

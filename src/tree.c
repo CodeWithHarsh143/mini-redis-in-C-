@@ -39,7 +39,7 @@ Leaf *find_last(Node *parent)
   }
   for (l = parent->east; l; l->east = l->east)
     ; // linklist like traversal
-  assert(l);
+  assert(l); // checking if l is valid
   return l;
 }
 Leaf *create_leaf(Node *parent, int8 *key, int8 *value, int16 count)
@@ -65,11 +65,10 @@ Leaf *create_leaf(Node *parent, int8 *key, int8 *value, int16 count)
   }
   newLeaf->east = NULL;
   strncpy((char *)newLeaf->key, (char *)key, 128);
-  newLeaf->value = malloc(count + 1);
+  newLeaf->value = malloc(count+1);
   assert(newLeaf->value);
-  zero(newLeaf->value, count + 1);
+  zero(newLeaf->value, count+1);
   strncpy((char *)newLeaf->value, (char *)value, count);
-  newLeaf->value[count] = 0;
   newLeaf->size = count;
   return newLeaf;
 }
