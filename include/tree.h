@@ -56,5 +56,6 @@ Leaf *create_leaf(Node *, int8 *, int8 *, int16);
 Node *create_node(Node *, int8 *);
 Leaf *lookup_linear(int8 *, int8 *);
 Node *find_node_linear(int8 *);
+Tree example_tree(void);
 int main();
 #endif

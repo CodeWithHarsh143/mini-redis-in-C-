@@ -1,5 +1,6 @@
 #include "tree.h"
 #include <linux/limits.h>
+#include <unistd.h>
 Tree root = {.node = {.tag = (TagRoot | TagNode),
                       .north = (Node *)&root,
                       .south = 0,
@@ -138,21 +139,27 @@ Leaf *lookup_linear(int8 *path, int8 *key) {
 
   return l;
 }
+
+Tree example_tree(void) {
+  Node *n, *p;
+  int8 path[256]; // allocating space for path
+  int8 ch;
+  int32 len;
+  zero(path, 256);
+  for (ch = 'a', n = &root.node; ch <= 'z'; ch++) {
+    len = (int32)strlen((char *)path);
+    *(path + len++) = '/';
+    *(path + len) = ch;
+    // p = n; // parent
+    n = create_node(n, path);
+  }
+
+  return root;
+}
 int main() {
   // example
-  Node *n1, *n2, *n3;
-  Leaf *l;
-  n1 = create_node((Node *)&root, "/Users");
-  n2 = create_node(n1, "/Users/Document");
-  n3 = create_node(n2, "/Users/Document/Redis");
-  l = create_leaf(n3, "Harsh", "Baghel", sizeof("Baghel"));
-  l = create_leaf(n3, "Shivam", "Baghel", sizeof("Baghel"));
-  print_tree(STDOUT_FILENO, root);
-  find_node_linear((int8 *)"/Users/Document/Redis");
-  l = lookup_linear("/Users/Document/Redis", "Monika");
-  if (l)
-    printf("%s\n", (char *)l->value);
-  else
-    printf("wrong path or key");
+  Tree t;
+  t = example_tree();
+  print_tree(STDOUT_FILENO, t);
   return 0;
 }

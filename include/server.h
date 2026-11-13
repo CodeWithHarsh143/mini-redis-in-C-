@@ -19,20 +19,13 @@
 typedef unsigned int int32;
 typedef unsigned short int int16;
 typedef unsigned char int8;
-
-typedef struct sock_client {
-  int FD;
-  int port;
-  char ip[INET_ADDRSTRLEN];
-} Client;
-
-typedef int32 (*Callback)(Client *, int8 *, int8 *);
-
+typedef struct sock_client Client;
+typedef int32 (*Callback)(Client *, int8, int8);
 struct s_cmdHandler {
   int8 *cmd;
   Callback handler;
 };
-typedef struct s_cmdHandler CmdHandler;
+typedef s_cmdHandler CmdHandler;
 /* code init */
 int32 handle_hello(Client *, int8 *, int8 *);
 Callback getcmd(int8 *);
