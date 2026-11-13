@@ -83,7 +83,7 @@ gcc -Iinclude src/tree.c -o tree && ./tree
 
 # build and run tree tests (separate mains)
 gcc -Iinclude -Dmain=tree_demo_main -c src/tree.c -o /tmp/tree.o \
-  && gcc -Iinclude -c test_tree.c -o /tmp/test_tree.o \
+  && gcc -Iinclude -c tests/test_tree.c -o /tmp/test_tree.o \
   && gcc /tmp/test_tree.o /tmp/tree.o -o test_tree \
   && ./test_tree
 
