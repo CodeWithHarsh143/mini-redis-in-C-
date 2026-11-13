@@ -1,19 +1,21 @@
 /* server.c */
 #include "server.h"
-int32 handle_hello(Client *cli, int8 *folder, int8 *args) {
-  dprintf(cli->FD, "%s\n", "hello");
+#include <stdio.h>
+int32 handle_hello(Client *client, int8 *folder,
+                   int8 *args) struct sock_client {
+  int FD;
+  int port;
+  char ip[INET_ADDRSTRLEN];
+};
+CmdHandler handlers[] = {{(int8 *)"hello", handle_hello}}
+
+Callback getcmd(int8 * cmd) {
+  printf("%d", sizeof(handlers));
   return 0;
 }
-CmdHandler handlers[] = {{"hello", handle_hello}};
-Callback getcmd(int8 *cmd) {
-  int arrlen = sizeof(handlers) / sizeof(handlers[0]);
 
-  for (int i = 0; i < arrlen; i++) {
-    if (!strcmp((char *)cmd, (char *)handlers[i].cmd)) {
-      return handlers[i].handler;
-    }
-  }
-  return NULL;
+int32 handle_hello(Client *client, int8 *folder, int8 *args) {
+  dprintf(client->FD, "hello %s\n", folder);
 }
 void zero(int8 *str, int16 size) {
   int8 *p;
@@ -129,6 +131,8 @@ int initServer(int16 port) {
   sock.sin_family = AF_INET;
   sock.sin_addr.s_addr = inet_addr(HOST); // ip address
 
+  getCmd("hello");
+  return 0;
   serverFD = socket(AF_INET, SOCK_STREAM, 0);
 
   if (serverFD == -1) {
