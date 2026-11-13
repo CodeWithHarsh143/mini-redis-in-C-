@@ -3,6 +3,7 @@
 // includes
 #include <assert.h>
 #include <errno.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -11,6 +12,7 @@
 #define TagRoot 1
 #define TagNode 2
 #define TagLeaf 4
+#define ExampleFile "./example_words.txt"
 #define WRITE_NODE(fd, path) write(fd, (char *)path, strlen((char *)path))
 #define WRITE_LEAF(fd, l)                                                      \
   do {                                                                         \
@@ -57,5 +59,7 @@ Node *create_node(Node *, int8 *);
 Leaf *lookup_linear(int8 *, int8 *);
 Node *find_node_linear(int8 *);
 Tree example_tree(void);
+int8 *example_path(int8);
+Tree example_leaf(void);
 int main();
 #endif

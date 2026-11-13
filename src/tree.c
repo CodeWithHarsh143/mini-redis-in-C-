@@ -126,9 +126,8 @@ Leaf *lookup_linear(int8 *path, int8 *key) {
   size = strlen((char *)key);
   if (size > 127)
     return NULL;
-  if (!find_node_linear(path))
-    return NULL;
-  if (!p->east)
+  p = find_node_linear(path);
+  if (!p || !p->east)
     return NULL;
 
   for (l = p->east; (l && strcmp((char *)l->key, key)); l = l->east)
@@ -138,28 +137,4 @@ Leaf *lookup_linear(int8 *path, int8 *key) {
     return NULL;
 
   return l;
-}
-
-Tree example_tree(void) {
-  Node *n, *p;
-  int8 path[256]; // allocating space for path
-  int8 ch;
-  int32 len;
-  zero(path, 256);
-  for (ch = 'a', n = &root.node; ch <= 'z'; ch++) {
-    len = (int32)strlen((char *)path);
-    *(path + len++) = '/';
-    *(path + len) = ch;
-    // p = n; // parent
-    n = create_node(n, path);
-  }
-
-  return root;
-}
-int main() {
-  // example
-  Tree t;
-  t = example_tree();
-  print_tree(STDOUT_FILENO, t);
-  return 0;
 }
