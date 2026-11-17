@@ -1,4 +1,4 @@
-# mini_redis
+# mini_redis in C
 
 A C project exploring a tree-based in-memory data structure and a basic TCP server/client command flow (work in progress).
 
